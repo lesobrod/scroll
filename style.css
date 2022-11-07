@@ -1,0 +1,55 @@
+.unselectable {
+  -webkit-user-select: none;   
+  -moz-user-select: none;    
+  -ms-user-select: none;       
+  user-select: none;      
+}
+.fadeIn {
+	animation-name: myFadeIn;
+	animation-duration: 4s;
+	animation-timing-function: ease-in;
+	animation-direction: normal;
+	animation-iteration-count: 1;
+}
+
+.fadeOut {
+	animation-name: myFadeOut;
+	animation-duration: 2s;
+	animation-timing-function: ease-out;
+	animation-direction: normal;
+	animation-iteration-count: 1;
+}
+
+@keyframes myFadeIn {
+  0% {opacity: 0;}
+	50% {opacity: 1;}
+  100% {opacity: 1;}
+}
+
+@keyframes myFadeOut {
+  0% {opacity: 1;}
+	30% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+body {
+	background-color: black;
+	margin: 0%;
+	overflow: hidden; 
+}
+
+canvas {
+	position:absolute; 
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	padding-left: 0;
+	padding-right: 0;
+	display: block;
+}
+
+
+::-webkit-scrollbar {
+	display: none;
+}
