@@ -4,31 +4,31 @@
   -ms-user-select: none;       
   user-select: none;      
 }
-.fadeIn {
-	animation-name: myFadeIn;
-	animation-duration: 4s;
-	animation-timing-function: ease-in;
-	animation-direction: normal;
-	animation-iteration-count: 1;
+ .fadeIn {
+animation-name: myFadeIn;
+animation-duration: 2s;
+animation-timing-function: ease-in;
+animation-direction: forward;
+animation-iteration-count: 1;
 }
 
 .fadeOut {
-	animation-name: myFadeOut;
-	animation-duration: 2s;
-	animation-timing-function: ease-out;
-	animation-direction: normal;
-	animation-iteration-count: 1;
+animation-name: myFadeOut;
+animation-duration: 2s;
+animation-timing-function: ease-out;
+animation-direction: forward;
+animation-iteration-count: 1;
 }
 
 @keyframes myFadeIn {
   0% {opacity: 0;}
-	50% {opacity: 1;}
+70% {opacity: 1;}
   100% {opacity: 1;}
 }
 
 @keyframes myFadeOut {
   0% {opacity: 1;}
-	30% {opacity: 1;}
+30% {opacity: 1;}
   100% {opacity: 0;}
 }
 
