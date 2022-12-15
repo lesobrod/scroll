@@ -29,15 +29,15 @@ class Letter {
 class Scroll {
 	constructor() {
 		this.screenRate   = 12;
+		this.widthCoeff   = 0.0002;
 		this.GR           = 1.61803;
+		// Искривление квадрик
 		this.flection     = 0.19;
 		this.cnv          = document.querySelector('canvas');
 		this.ctx          = this.cnv.getContext('2d');
-		this.DPR          = window.devicePixelRatio;
-		this.w            = this.cnv.width;
-		this.h            = this.cnv.height;
+		
 		this.isAnimate    = true;
-
+		
 		window.onclick = () => {
 			if (this.cnv.style.animationPlayState == "paused") {
 				this.cnv.style.animationPlayState = "running";
@@ -46,11 +46,13 @@ class Scroll {
 			}
 		};
 		
-		window.onresize = () => {//Улучшить
-			this.setCanvasSize();
+		window.onresize = () => {
+      this.cnv.style.animationPlayState = "running";
+			this.drawAnimation();
 		};
 		
-		screen.orientation.onchange = () => {//Проверить
+		screen.orientation.onchange = () => {
+      this.cnv.style.animationPlayState = "running";
 			this.drawAnimation();
 		};
 		
@@ -91,8 +93,8 @@ class Scroll {
 	}
 	
 	setCanvasSize() {
-		this.w = this.cnv.width  = window.innerWidth  * this.DPR;
-		this.h = this.cnv.height = window.innerHeight * this.DPR;
+		this.w = this.cnv.width  = window.innerWidth;
+		this.h = this.cnv.height = window.innerHeight;
 	}
 	
 	
@@ -100,11 +102,14 @@ class Scroll {
 		switch (screen.orientation.type) {
 			case "landscape-primary":
 			case "landscape-secondary":
-			this.screenRate = 12;
-			break;	
+			this.screenRate = 0.111;
+			this.widthCoeff = 0.05;
+			break;
+			
 			case "portrait-primary":
 			case "portrait-secondary":
-			this.screenRate = 7;
+			this.screenRate = 0.1;
+			this.widthCoeff = 0.05;
 			break;
 			default:
 			alert("Screen not supported");
@@ -112,17 +117,21 @@ class Scroll {
 	}
 	
 	drawWord(word) {
-
+		
 		this.ctx.strokeStyle = this.ctx.fillStyle = Scroll.myRed();
-		this.ctx.lineWidth   =  0.0002 * this.w ** 0.9;
+		// Толщина зависит от ориентации и ширины экрана
+		this.ctx.lineWidth   = this.widthCoeff * this.w ** 0.2	;
 		this.ctx.lineCap     = "round";
 		this.ctx.lineJoin    = "round";
-		
-		const letterWidth    = this.w / this.screenRate;
-		const startWordX     = (this.w - letterWidth * word.letters.length) / 2;
+		// Ширина буквы зависит от  ориентации и ширины экрана
+		const letterWidth    = this.w * this.screenRate;
+		// Пробел межжду буквами в долях от ширины буквы
+		const letterSpace    = 0.8 * letterWidth ** 0.3;
+		const startWordX     = (this.w - 1.2 * letterWidth * word.letters.length) / 2;
 		const letterHeight   = this.GR * letterWidth;
 		const startWordY     = (this.h - letterHeight) / 2;
-
+		console.log(letterWidth, letterSpace );
+		
 		const drawQuadric = (xb, yb, xe, ye) => {
 			const p1 = Scroll.rndReal(0, this.flection); 
 			const p2 = Scroll.rndReal(-this.flection, this.flection);
@@ -148,7 +157,7 @@ class Scroll {
 				return [x + rndX, y + rndY];
 			}
 			
-			this.ctx.translate(letter.index > 0 ? 2.3 : 0, 0);	
+			this.ctx.translate(letter.index > 0 ? letterSpace : 0, 0);	
 			
 			for (let elem of letter.strokes) {
 				this.ctx.beginPath();
@@ -171,7 +180,7 @@ class Scroll {
 			{
 				this.ctx.resetTransform();
 				this.ctx.clearRect(0, 0, this.w, this.h); 
-				this.ctx.scale( 1/ this.DPR, 1/this.DPR);
+			//	this.ctx.scale( 1/ this.DPR, 1/this.DPR);
 				this.ctx.transform(
 					letterWidth / 2, 
 					0.0,
@@ -188,18 +197,19 @@ class Scroll {
 	
 	async drawAnimation() {
 		
-		this.setScreenRate();
-		this.setCanvasSize();	
-		this.cnv.className = "";
+		await this.setScreenRate();
+		await this.setCanvasSize();	
+		this.cnv.className = await "";
 		
 		while (this.isAnimate) {
-			let word = await new Word(3);
+			let word = await new Word(Scroll.rndInt(1, 5));
 			await this.drawWord(word);
 			await this.fadeIn();
 			await this.fadeOut();
 		}
 	}
 }
+
 
 window.onload = () => {
 	scroll = new Scroll();
